@@ -29,7 +29,6 @@ export default React.createClass({
 
     return (
       <div>
-        <h3>Add Device</h3>
         <Form onSubmit={this.handleForm}>
           <Input label='Serial Number' floatingLabel/>
           <Button id={cancelId}>Cancel</Button>

@@ -18,12 +18,17 @@ import ListItem from 'material-ui/lib/lists/list-item';
 import ActionInfo from 'material-ui/lib/svg-icons/action/info';
 import Divider from 'material-ui/lib/divider';
 import Avatar from 'material-ui/lib/avatar';
-import DeviceIcon from 'material-ui/lib/svg-icons/action/lightbulb-outline.js';
+import DeviceIcon from 'material-ui/lib/svg-icons/hardware/router';
 import ActionAssignment from 'material-ui/lib/svg-icons/action/assignment';
 import Colors from 'material-ui/lib/styles/colors';
 import RaisedButton from 'material-ui/lib/raised-button';
 import FlatButton from 'material-ui/lib/flat-button';
 import Dialog from 'material-ui/lib/dialog';
+import IconButton from 'material-ui/lib/icon-button';
+import MoreVertIcon from 'material-ui/lib/svg-icons/navigation/more-vert';
+import IconMenu from 'material-ui/lib/menus/icon-menu';
+import MenuItem from 'material-ui/lib/menus/menu-item';
+import Popover from 'material-ui/lib/popover/popover';
 
 // Test 
 import { bindActionCreators } from 'redux'
@@ -181,58 +186,51 @@ let DevicesView = React.createClass({
       marginBottom:30
     };
 
-    const logoutButton = (
-      <FlatButton label="LOGOUT"
-                  primary={true}
-                  style={{ color: 'rgb(255, 64, 129)' }}
-                  onTouchStart={this.handleLogout}
-                  onMouseUp={this.handleLogout} />
+
+    const mainAppMoreMenu = (
+      <IconMenu
+        iconButtonElement={<IconButton><MoreVertIcon/></IconButton>}
+        anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+        targetOrigin={{horizontal: 'right', vertical: 'top'}} >
+        <MenuItem onTouchStart={this.handleLogout}
+                  onMouseUp={this.handleLogout}
+                  primaryText="Logout" />
+      </IconMenu>
     );
 
     return (
       <div>
-        <AppBar title={ <div className='appbar-logo-container'><img src='/images/example_iot_company_logo_mark.svg' /></div> }
-                style={ appBarStyle }
-                iconElementRight={ logoutButton }
+        <AppBar title="Device List"
+                iconElementRight={ mainAppMoreMenu }
                 showMenuIconButton={false}  />
-
-        <div className='masthead'>
-          <div className='headline'>Device List {spinner_when_waiting}</div>
-          <FloatingActionButton
-            onMouseDown={this.showDeviceModal}
-            backgroundColor={ '#FF921E' }
-            mini={false}
-            style={actionButtonStyle}>
-            <ContentAdd />
-          </FloatingActionButton>
-        </div>
 
         <Container>
           {error_message}
           {info_message_when_none}
           <List>
           {state.devices.statuses.sort((a,b) => a.serialnumber > b.serialnumber).map( (m,i) => {
-            const link = function(e) {
-              // TODO: fix when I fix routing
-              let sn = e.target.innerHTML;
-              browserHistory.push('/devices/' + sn)
-              //`/devices/${m.serialnumber}`;
-            }
+            const link = '/devices/' + m.serialnumber
             return (
-                  <a onClick={link} key={i}>
-                    <ListItem leftAvatar={<Avatar icon={<DeviceIcon />} backgroundColor={ m.state === 'on' ? Colors.yellow600 : Colors.grey300} />}
-                              primaryText={m.name}
-                              secondaryText={m.serialnumber} 
-                              className="bulb-list-item" />
-                      <Divider />
-                  </a>
-                )
+              <Link to={link}>
+                <ListItem leftAvatar={<DeviceIcon />}
+                          primaryText={m.name}
+                          secondaryText={m.serialnumber}
+                          className="bulb-list-item" />
+              </Link>
+            )
             })}
           </List>
         </Container>
 
+        <FloatingActionButton
+          onMouseDown={this.showDeviceModal}
+          mini={false}
+          style={actionButtonStyle}>
+          <ContentAdd />
+        </FloatingActionButton>
+
         <Dialog
-          title=""
+          title="Add Device"
           contentStyle={{ maxWidth: 400 }}
           modal={true}
           open={this.state.deviceModalOpen}

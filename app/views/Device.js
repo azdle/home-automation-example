@@ -19,7 +19,8 @@ import Popover from 'material-ui/lib/popover/popover';
 import RaisedButton from 'material-ui/lib/raised-button';
 import Divider from 'material-ui/lib/divider';
 import Avatar from 'material-ui/lib/avatar';
-import LightbulbIcon from 'material-ui/lib/svg-icons/action/lightbulb-outline.js';
+import RouterIcon from 'material-ui/lib/svg-icons/device/data-usage';
+import AddIcon from 'material-ui/lib/svg-icons/content/add';
 import ActionAssignment from 'material-ui/lib/svg-icons/action/assignment';
 import List from 'material-ui/lib/lists/list';
 import ListItem from 'material-ui/lib/lists/list-item';
@@ -91,31 +92,28 @@ export default React.createClass({
       : <div className='messagebox error'>{this.context.store.getState().auth.error}</div>
     );
 
-    let appBarStyle = {
-      backgroundColor: '#ffffff'
-    };
-
-    const logoutButton = (
-      <FlatButton label="LOGOUT"
-                  primary={true}
-                  style={{ color: 'rgb(255, 64, 129)' }}
-                  onTouchStart={this.handleLogout}
-                  onMouseUp={this.handleLogout} />
+    const mainAppMoreMenu = (
+      <IconMenu
+        iconButtonElement={<IconButton><MoreVertIcon/></IconButton>}
+        anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+        targetOrigin={{horizontal: 'right', vertical: 'top'}} >
+        <MenuItem onTouchStart={this.handleLogout}
+                  onMouseUp={this.handleLogout}
+                  primaryText="Logout" />
+      </IconMenu>
     );
 
     let state = this.context.store.getState();
 
     let device = state.devices.statuses.find(lb => lb.serialnumber === this.props.params.sn);
+    let deviceName = device === undefined ? "" : device.serialnumber
 
     let iconStyle = {
       top: 16
     };
 
+    //let shares = state.devices.shares.filter(v => v.serialnumber == this.props.params.sn);
     let shares = [];
-    let alerts = [];
-    let sharesList = [];
-    let alertsList = [];
-    /* let shares = state.devices.shares.filter(v => v.serialnumber == this.props.params.sn);
     let sharesList = (
       (shares.length > 0) ?
         shares.map((v) => {
@@ -127,8 +125,8 @@ export default React.createClass({
         ( <ListItem primaryText="Not yet shared." /> )
     );
 
-    let alerts = state.devices.alerts.filter(v => v.serialnumber == this.props.params.sn);
-    console.log("alerts: ", alerts[0]);
+    //let alerts = state.devices.alerts.filter(v => v.serialnumber == this.props.params.sn);
+    let alerts = [];
     let alertsList = (
       (alerts.length > 0) ?
         alerts.map((v) => {
@@ -139,7 +137,7 @@ export default React.createClass({
         }) :
         ( <ListItem primaryText="No alerts created." /> )
     );
-    */
+
     const rightIconMenu = (
       <IconMenu
         iconButtonElement={<IconButton><MoreVertIcon color={Colors.grey400} /></IconButton>}
@@ -153,35 +151,53 @@ export default React.createClass({
       </IconMenu>
     );
 
-    return (
-      <div>
-        <AppBar title={ <div className='appbar-logo-container'><img src='/images/example_iot_company_logo_mark.svg' /></div> }
-                style={ appBarStyle }
-                iconElementRight={ logoutButton }
-                showMenuIconButton={false} />
+    const main_content = (
 
-        <div className="nav-bar">
-          <RaisedButton linkButton={true}
-                        onClick={() => { browserHistory.push('/devices') }}
-                        style={{ maxWidth: 45 }}
-                        primary={true}
-                        icon={ (<span className="home-icon"><ChevronLeft color={ '#ffffff' } /><ActionHome color={ '#ffffff' } /></span>)}/>
-        </div>
-
-        <List>
-          <ListItem leftAvatar={<Avatar icon={<LightbulbIcon />} backgroundColor={ device.state === 'on' ? Colors.yellow600 : Colors.grey300} />}
-                    primaryText={device.name}
-                    secondaryText={device.serialnumber}
-                    rightIconButton={rightIconMenu} />
+      device === undefined
+      ? <div>Unknown Error</div>
+      : <div>
+        <List subheader="Data">
+          <ListItem leftIcon={<RouterIcon />}
+                    primaryText="Temperature"
+                    secondaryText="5°C"
+                    disabled={true} />
+          <ListItem leftIcon={<RouterIcon />}
+                    primaryText="Humidity"
+                    secondaryText="63%"
+                    disabled={true} />
+          <ListItem leftIcon={<RouterIcon />}
+                    primaryText="Uptime"
+                    secondaryText="6453456"
+                    disabled={true} />
+          <ListItem leftIcon={<RouterIcon />}
+                    primaryText="Message"
+                    secondaryText="Hello, world!"
+                    disabled={true} />
         </List>
 
         <List subheader="Shared with" insetSubheader={false}>
           { sharesList }
+          <ListItem leftIcon={<AddIcon />}
+                    primaryText="Share"
+                    onClick={() => alert("Not Yet Implemented")} />
         </List>
 
         <List subheader="Alerts" insetSubheader={false}>
           { alertsList }
+          <ListItem leftIcon={<AddIcon />}
+                    primaryText="Create Alert"
+                    onClick={() => alert("Not Yet Implemented")} />
         </List>
+      </div>
+    )
+
+    return (
+      <div>
+        <AppBar title={deviceName}
+                iconElementRight={ mainAppMoreMenu }
+                iconElementLeft={ <Link  to='/devices'><IconButton><ChevronLeft /></IconButton></Link> } />
+
+        {main_content}
 
       </div>
     )
