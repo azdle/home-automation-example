@@ -1,5 +1,5 @@
 import React from 'react'
-import { browserHistory } from 'react-router'
+import { hashHistory } from 'react-router'
 import { Link } from 'react-router'
 import Form from 'muicss/lib/react/form'
 import Button from 'muicss/lib/react/button'
@@ -41,12 +41,12 @@ export default React.createClass({
 
     this.unsubscribe = this.context.store.subscribe(() => {
       if (state.devices.statuses.filter(v => v.serialnumber == this.props.params.sn).length == 0) {
-        browserHistory.push('/devices')
+        hashHistory.push('/devices')
       }
 
       // FIXME: This is probably the wrong way to do this.
       if (state.auth.session === undefined) {
-        browserHistory.push('/login')
+        hashHistory.push('/login')
       }
       // FIXME: This is definitely the wrong way to do this, use react-redux's `connect`
 
@@ -74,7 +74,7 @@ export default React.createClass({
 
     logout()(this.context.store.dispatch);
 
-    browserHistory.push('/login');
+    hashHistory.push('/login');
 
     this.forceUpdate();
   },

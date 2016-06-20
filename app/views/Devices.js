@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react'
 import ReactDOM from 'react-dom';
-import { browserHistory } from 'react-router'
+import { hashHistory } from 'react-router'
 import { Link } from 'react-router'
 import FloatingActionButton from 'material-ui/lib/floating-action-button';
 import Spinner from '../components/spinner'
@@ -79,7 +79,7 @@ let DevicesView = React.createClass({
 
     logout()(this.context.store.dispatch)
 
-    browserHistory.push('/login')
+    hashHistory.push('/login')
 
     this.forceUpdate()
   },
@@ -89,7 +89,7 @@ let DevicesView = React.createClass({
 
     // FIXME: This is probably the wrong way to do this.
     if (state.auth.session === undefined) {
-      browserHistory.push('/login')
+      hashHistory.push('/login')
       return
     }
 
