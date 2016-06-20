@@ -58,7 +58,7 @@ if user ~= nil and user.id ~= nil then
 end
 response.code = 400
 response.message = "Session invalid"
---#ENDPOINT POST /user/{email}/lightbulbs
+--#ENDPOINT POST /user/{email}/devices
 local sn = tostring(request.body.serialnumber);
 local link = request.body.link;
 local user = currentUser(request)
@@ -131,7 +131,7 @@ else
   response.message = "Conflict"
   response.code = 409
 end
---#ENDPOINT GET /user/{email}/lightbulbs
+--#ENDPOINT GET /user/{email}/devices
 local user = currentUser(request)
 if user ~= nil then
   local list = {}
@@ -253,7 +253,7 @@ if user ~= nil then
   end
 end
 http_error(403, response)
---#ENDPOINT POST /lightbulb/{sn}
+--#ENDPOINT POST /device/{sn}
 local sn = tostring(request.parameters.sn)
 local user = currentUser(request)
 if user ~= nil then
@@ -274,7 +274,7 @@ else
   http_error(403, response)
 end
 
---#ENDPOINT GET /lightbulb/{sn}
+--#ENDPOINT GET /device/{sn}
 local sn = tostring(request.parameters.sn)
 local user = currentUser(request)
 if user ~= nil then
@@ -292,7 +292,7 @@ if user ~= nil then
 else
   http_error(403, response)
 end
---#ENDPOINT GET /lightbulb/{sn}/alert
+--#ENDPOINT GET /device/{sn}/alert
 local alerts = {}
 local value = kv_read(request.parameters.sn)
 if value.alerts ~= nil then
@@ -303,7 +303,7 @@ for _, alert in ipairs(alerts) do
   alert.timer_running = nil
 end
 return to_json(alerts)
---#ENDPOINT DELETE /lightbulb/{sn}/alert
+--#ENDPOINT DELETE /device/{sn}/alert
 local sn = request.parameters.sn
 if not (request.body.state and request.body.timer) then
   http_error(400, response)
@@ -318,7 +318,7 @@ if value.alerts ~= nil then
 end
 kv_write(sn, value)
 response.code = 204
---#ENDPOINT POST /lightbulb/{sn}/alert
+--#ENDPOINT POST /device/{sn}/alert
 --{state:on, timer:5, email:user, active:true, message=""}
 if not (
   request.body.state and request.body.timer and

@@ -4,8 +4,8 @@ import { browserHistory } from 'react-router'
 import { Link } from 'react-router'
 import FloatingActionButton from 'material-ui/lib/floating-action-button';
 import Spinner from '../components/spinner'
-import AddLightbulbForm from '../components/add_lightbulb_form'
-import { attemptToggleLightbulbState, attemptAddLightbulb, requestLightbulbs } from '../actions/lightbulbs'
+import AddDeviceForm from '../components/add_device_form'
+import { attemptToggleDeviceState, attemptAddDevice, requestDevices } from '../actions/devices'
 import Container from 'muicss/lib/react/container';
 import { logout } from '../actions/auth'
 import { connect } from 'react-redux'
@@ -18,7 +18,7 @@ import ListItem from 'material-ui/lib/lists/list-item';
 import ActionInfo from 'material-ui/lib/svg-icons/action/info';
 import Divider from 'material-ui/lib/divider';
 import Avatar from 'material-ui/lib/avatar';
-import LightbulbIcon from 'material-ui/lib/svg-icons/action/lightbulb-outline.js';
+import DeviceIcon from 'material-ui/lib/svg-icons/action/lightbulb-outline.js';
 import ActionAssignment from 'material-ui/lib/svg-icons/action/assignment';
 import Colors from 'material-ui/lib/styles/colors';
 import RaisedButton from 'material-ui/lib/raised-button';
@@ -30,18 +30,18 @@ import { bindActionCreators } from 'redux'
 
 function mapStateToProps(state) {
   return { 
-    error: state.lightbulbs.error,
-    statuses: state.lightbulbs.statuses
+    error: state.devices.error,
+    statuses: state.devices.statuses
   }
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
-    { attemptToggleLightbulbState, attemptAddLightbulb, requestLightbulbs }, 
+    { attemptToggleDeviceState, attemptAddDevice, requestDevices }, 
     dispatch)
 }
 
-let LightbulbsView = React.createClass({
+let DevicesView = React.createClass({
 
   contextTypes: {
     store: React.PropTypes.object
@@ -49,21 +49,21 @@ let LightbulbsView = React.createClass({
 
   getInitialState() {
     return {
-      lightbulbModalOpen: false
+      deviceModalOpen: false
     }
   },
 
-  showLightbulbModal() {
-    this.setState({lightbulbModalOpen: true});
+  showDeviceModal() {
+    this.setState({deviceModalOpen: true});
   },
 
-  closeLightbulbModal() {
-    this.setState({lightbulbModalOpen: false});
+  closeDeviceModal() {
+    this.setState({deviceModalOpen: false});
   },
 
-  handleAddLightbulb(request) {
-    attemptAddLightbulb(request.sn)(this.context.store.dispatch, this.context.store.getState)
-    this.closeLightbulbModal();
+  handleAddDevice(request) {
+    attemptAddDevice(request.sn)(this.context.store.dispatch, this.context.store.getState)
+    this.closeDeviceModal();
   },
 
   /**
@@ -96,7 +96,7 @@ let LightbulbsView = React.createClass({
     //})
     //
     //// TODO: replace all these calls with redux-thunk
-    requestLightbulbs()(this.context.store.dispatch, this.context.store.getState)
+    requestDevices()(this.context.store.dispatch, this.context.store.getState)
 
     
     this.pollInterval = 1000
@@ -117,8 +117,8 @@ let LightbulbsView = React.createClass({
 
   updateStatuses () {
     let state = this.context.store.getState()
-    if (state.lightbulbs.isFetching == false) {
-      requestLightbulbs()(this.context.store.dispatch, this.context.store.getState)
+    if (state.devices.isFetching == false) {
+      requestDevices()(this.context.store.dispatch, this.context.store.getState)
     }
   
    this.pollTimer = window.setTimeout(() => {
@@ -135,7 +135,7 @@ let LightbulbsView = React.createClass({
   },
   propTypes: {
     error: PropTypes.string,
-    lightbulbs: PropTypes.arrayOf(PropTypes.shape({
+    devices: PropTypes.arrayOf(PropTypes.shape({
       serialnumber: PropTypes.string.isRequired,
       state: PropTypes.number.isRequired
     }))
@@ -148,22 +148,22 @@ let LightbulbsView = React.createClass({
   },
   render() {
     let spinner_when_waiting = (
-      this.context.store.getState().lightbulbs.isFetching && this.context.store.getState().lightbulbs.statuses.length == 0
+      this.context.store.getState().devices.isFetching && this.context.store.getState().devices.statuses.length == 0
       ? <Spinner />
       : <Spinner style={{visibility: "hidden"}} />
     )
 
-    let lightbulbs_error = this.props.error; // this.context.store.getState().lightbulbs.error
-    console.log('lightbulbs_error during render() is:', lightbulbs_error);
+    let devices_error = this.props.error; // this.context.store.getState().devices.error
+    console.log('devices_error during render() is:', devices_error);
     let error_message = (
-      lightbulbs_error == null
+      devices_error == null
       ? <div></div>
-      : <div className='messagebox error'>{lightbulbs_error}</div>
+      : <div className='messagebox error'>{devices_error}</div>
     );
 
     let info_message_when_none = (
-      this.context.store.getState().lightbulbs.statuses.length === 0
-      ? <div className='messagebox info'>You do not have any lightbulbs. <a href="javascript: void(0);" onMouseDown={this.showLightbulbModal}>+ New Lightbulb</a></div>
+      this.context.store.getState().devices.statuses.length === 0
+      ? <div className='messagebox info'>You do not have any devices. <a href="javascript: void(0);" onMouseDown={this.showDeviceModal}>+ New Device</a></div>
       : <div></div>
     );
 
@@ -197,9 +197,9 @@ let LightbulbsView = React.createClass({
                 showMenuIconButton={false}  />
 
         <div className='masthead'>
-          <div className='headline'>My Home {spinner_when_waiting}</div>
+          <div className='headline'>Device List {spinner_when_waiting}</div>
           <FloatingActionButton
-            onMouseDown={this.showLightbulbModal}
+            onMouseDown={this.showDeviceModal}
             backgroundColor={ '#FF921E' }
             mini={false}
             style={actionButtonStyle}>
@@ -211,16 +211,16 @@ let LightbulbsView = React.createClass({
           {error_message}
           {info_message_when_none}
           <List>
-          {state.lightbulbs.statuses.sort((a,b) => a.serialnumber > b.serialnumber).map( (m,i) => {
+          {state.devices.statuses.sort((a,b) => a.serialnumber > b.serialnumber).map( (m,i) => {
             const link = function(e) {
               // TODO: fix when I fix routing
               let sn = e.target.innerHTML;
-              browserHistory.push('/lightbulbs/' + sn)
-              //`/lightbulbs/${m.serialnumber}`;
+              browserHistory.push('/devices/' + sn)
+              //`/devices/${m.serialnumber}`;
             }
             return (
                   <a onClick={link} key={i}>
-                    <ListItem leftAvatar={<Avatar icon={<LightbulbIcon />} backgroundColor={ m.state === 'on' ? Colors.yellow600 : Colors.grey300} />}
+                    <ListItem leftAvatar={<Avatar icon={<DeviceIcon />} backgroundColor={ m.state === 'on' ? Colors.yellow600 : Colors.grey300} />}
                               primaryText={m.name}
                               secondaryText={m.serialnumber} 
                               className="bulb-list-item" />
@@ -235,10 +235,10 @@ let LightbulbsView = React.createClass({
           title=""
           contentStyle={{ maxWidth: 400 }}
           modal={true}
-          open={this.state.lightbulbModalOpen}
-          onRequestClose={this.closeLightbulbModal} >
+          open={this.state.deviceModalOpen}
+          onRequestClose={this.closeDeviceModal} >
 
-          <AddLightbulbForm onSubmit={this.handleAddLightbulb} isLoading={state.lightbulbs.isAdding} />
+          <AddDeviceForm onSubmit={this.handleAddDevice} isLoading={state.devices.isAdding} />
         </Dialog>
        </div>
     )
@@ -246,7 +246,7 @@ let LightbulbsView = React.createClass({
 })
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(LightbulbsView);
+export default connect(mapStateToProps, mapDispatchToProps)(DevicesView);
 
 
 //const rightIconMenu = (

@@ -55,32 +55,32 @@ export function attemptShare (email, serialnumber) {
   }
 }
 
-export function attemptToggleLightbulbState (serialnumber) {
+export function attemptToggleDeviceState (serialnumber) {
   return (dispatch, getState) => {
     dispatch({
-      type: 'ATTEMPT_TOGGLE_LIGHTBULB_STATE',
+      type: 'ATTEMPT_TOGGLE_DEVICE_STATE',
       serialnumber: serialnumber
     })
 
-    let { auth, lightbulbs } = getState()
+    let { auth, devices } = getState()
 
     let { token, email } = auth.session
 
     // HACK
     email = email || window.sessionStorage.getItem('email')
 
-    let current_state = lightbulbs.statuses.filter(v => v.serialnumber == serialnumber)[0].state
+    let current_state = devices.statuses.filter(v => v.serialnumber == serialnumber)[0].state
     let new_state = current_state == "off" ? "on" : "off"
 
-    function toggleLightbulbResonseHandler () {
+    function toggleDeviceResonseHandler () {
       if (this.status === 200) {
-        toggleLightbulbStateSuccess(serialnumber, new_state)(dispatch)
+        toggleDeviceStateSuccess(serialnumber, new_state)(dispatch)
       } else if (this.status === 401 || this.status === 403) {
-        toggleLightbulbStateError('Invalid Credentials')(dispatch)
+        toggleDeviceStateError('Invalid Credentials')(dispatch)
       } else if (this.status === 0) {
-        toggleLightbulbStateError('Unable to Reach Server')(dispatch)
+        toggleDeviceStateError('Unable to Reach Server')(dispatch)
       } else {
-        toggleLightbulbStateError('Invalid Server Response Status: ' + this.status)(dispatch)
+        toggleDeviceStateError('Invalid Server Response Status: ' + this.status)(dispatch)
       }
     }
 
@@ -90,9 +90,9 @@ export function attemptToggleLightbulbState (serialnumber) {
 
     var oReq = new window.XMLHttpRequest()
     oReq.withCredentials = true;
-    oReq.addEventListener('load', toggleLightbulbResonseHandler)
-    oReq.addEventListener('error', toggleLightbulbResonseHandler)
-    oReq.open('POST', API_BASE_URL + '/lightbulb/'+serialnumber)
+    oReq.addEventListener('load', toggleDeviceResonseHandler)
+    oReq.addEventListener('error', toggleDeviceResonseHandler)
+    oReq.open('POST', API_BASE_URL + '/device/'+serialnumber)
     oReq.setRequestHeader('Content-Type', 'application/json')
     oReq.setRequestHeader('Accept', '*/*')
     oReq.setRequestHeader('Authorization', 'Token ' + token)
@@ -100,46 +100,46 @@ export function attemptToggleLightbulbState (serialnumber) {
   }
 }
 
-function toggleLightbulbStateSuccess (serialnumber, state) {
+function toggleDeviceStateSuccess (serialnumber, state) {
   return (dispatch) => {
     dispatch({
-      type: 'TOGGLE_LIGHTBULB_STATE_SUCCESS',
+      type: 'TOGGLE_DEVICE_STATE_SUCCESS',
       serialnumber: serialnumber,
       state: state
     })
   }
 }
 
-function toggleLightbulbStateError (error) {
+function toggleDeviceStateError (error) {
   return (dispatch, getState) => {
     dispatch({
-      type: 'TOGGLE_LIGHTBULB_STATE_ERROR',
+      type: 'TOGGLE_DEVICE_STATE_ERROR',
       error: error
     })
   }
 }
 
 
-export function requestLightbulbs () {
+export function requestDevices () {
   return (dispatch, getState) => {
     dispatch({
-      type: 'REQUEST_LIGHTBULBS'
+      type: 'REQUEST_DEVICES'
     })
 
-    function requestLightbulbsResponseHandler () {
+    function requestDevicesResponseHandler () {
       if (this.status === 200) {
         try {
           let resp = JSON.parse(this.responseText)
-          requestLightbulbsSuccess(resp)(dispatch)
+          requestDevicesSuccess(resp)(dispatch)
         } catch (e) {
-          requestLightbulbsError(this.responseText)(dispatch)
+          requestDevicesError(this.responseText)(dispatch)
         }
       } else if (this.status === 401) {
-        requestLightbulbsError('Invalid Credentials')(dispatch)
+        requestDevicesError('Invalid Credentials')(dispatch)
       } else if (this.status === 0) {
-        requestLightbulbsError('Unable to Reach Server')(dispatch)
+        requestDevicesError('Unable to Reach Server')(dispatch)
       } else {
-        requestLightbulbsError('Invalid Server Response Status: ' + this.status)(dispatch)
+        requestDevicesError('Invalid Server Response Status: ' + this.status)(dispatch)
       }
     }
 
@@ -152,65 +152,65 @@ export function requestLightbulbs () {
 
     var oReq = new window.XMLHttpRequest()
     oReq.withCredentials = true;
-    oReq.addEventListener('load', requestLightbulbsResponseHandler)
-    oReq.addEventListener('error', requestLightbulbsResponseHandler)
-    oReq.open('GET', API_BASE_URL + '/user/'+email+'/lightbulbs')
+    oReq.addEventListener('load', requestDevicesResponseHandler)
+    oReq.addEventListener('error', requestDevicesResponseHandler)
+    oReq.open('GET', API_BASE_URL + '/user/'+email+'/devices')
     oReq.setRequestHeader('Accept', '*/*')
     oReq.setRequestHeader('Authorization', 'Token ' + token)
     oReq.send()
   }
 }
 
-function requestLightbulbsSuccess (statuses) {
-  console.log('requestLightbulbsSuccess', statuses);
+function requestDevicesSuccess (statuses) {
+  console.log('requestDevicesSuccess', statuses);
   return (dispatch) => {
     dispatch({
-      type: 'REQUEST_LIGHTBULBS_SUCCESS',
+      type: 'REQUEST_DEVICES_SUCCESS',
       statuses: statuses 
     })
   }
 }
 
-function requestLightbulbsError (error) {
+function requestDevicesError (error) {
   return (dispatch, getState) => {
     dispatch({
-      type: 'REQUEST_LIGHTBULBS_ERROR',
+      type: 'REQUEST_DEVICES_ERROR',
       error: error
     })
   }
 }
 
 
-export function attemptAddLightbulb (serialnumber) {
+export function attemptAddDevice (serialnumber) {
   return (dispatch, getState) => {
     dispatch({
-      type: 'ATTEMPT_ADD_LIGHTBULB',
+      type: 'ATTEMPT_ADD_DEVICE',
       serialnumber: serialnumber
     })
 
-    let { auth, lightbulbs } = getState()
+    let { auth, devices } = getState()
 
     let { token, email } = auth.session
 
     // HACK
     email = email || window.sessionStorage.getItem('email')
 
-    function toggleLightbulbResonseHandler () {
+    function toggleDeviceResonseHandler () {
       if (this.status === 200) {
-        addLightbulbSuccess({})(dispatch)
-        console.log('requesting lightbulbs...');
-        requestLightbulbs()(dispatch, getState);
+        addDeviceSuccess({})(dispatch)
+        console.log('requesting devices...');
+        requestDevices()(dispatch, getState);
       } else if (this.status === 401 || this.status === 403) {
         // TODO: should log out here
-        addLightbulbError('Invalid Credentials')(dispatch)
+        addDeviceError('Invalid Credentials')(dispatch)
       } else if (this.status === 409) {
-        addLightbulbError('Another user owns lightbulb ' + serialnumber)(dispatch)
+        addDeviceError('Another user owns device ' + serialnumber)(dispatch)
       } else if (this.status === 0) {
-        addLightbulbError('Unable to Reach Server')(dispatch)
+        addDeviceError('Unable to Reach Server')(dispatch)
       } else if (this.status === 400) {
-        addLightbulbError(this.responseText)(dispatch)
+        addDeviceError(this.responseText)(dispatch)
       } else {
-        addLightbulbError('Invalid Server Response Status: ' + this.status)(dispatch)
+        addDeviceError('Invalid Server Response Status: ' + this.status)(dispatch)
       }
     }
 
@@ -221,9 +221,9 @@ export function attemptAddLightbulb (serialnumber) {
 
     var oReq = new window.XMLHttpRequest()
     oReq.withCredentials = true;
-    oReq.addEventListener('load', toggleLightbulbResonseHandler)
-    oReq.addEventListener('error', toggleLightbulbResonseHandler)
-    oReq.open('POST', API_BASE_URL + '/user/' + email + '/lightbulbs')
+    oReq.addEventListener('load', toggleDeviceResonseHandler)
+    oReq.addEventListener('error', toggleDeviceResonseHandler)
+    oReq.open('POST', API_BASE_URL + '/user/' + email + '/devices')
     oReq.setRequestHeader('Content-Type', 'application/json')
     oReq.setRequestHeader('Accept', '*/*')
     oReq.setRequestHeader('Authorization', 'Token ' + token)
@@ -231,35 +231,35 @@ export function attemptAddLightbulb (serialnumber) {
 
     window.setTimeout(() => {
       dispatch({
-        type: 'ADD_LIGHTBULB_SUCCESS',
+        type: 'ADD_DEVICE_SUCCESS',
         serialnumber: serialnumber,
         state: "off"
       })
     }, 1000)
   }
-}export function attemptDeleteLightbulb (serialnumber) {
+}export function attemptDeleteDevice (serialnumber) {
   return (dispatch, getState) => {
     dispatch({
-      type: 'ATTEMPT_DELETE_LIGHTBULB',
+      type: 'ATTEMPT_DELETE_DEVICE',
       serialnumber: serialnumber
     })
 
-    let { auth, lightbulbs } = getState()
+    let { auth, devices } = getState()
 
     let { token, email } = auth.session
 
     // HACK
     email = email || window.sessionStorage.getItem('email')
 
-    function deleteLightbulbResonseHandler () {
+    function deleteDeviceResonseHandler () {
       if (this.status === 200) {
-        deleteLightbulbSuccess(serialnumber)(dispatch)
+        deleteDeviceSuccess(serialnumber)(dispatch)
       } else if (this.status === 401 || this.status === 403) {
-        deleteLightbulbError('Invalid Credentials')(dispatch)
+        deleteDeviceError('Invalid Credentials')(dispatch)
       } else if (this.status === 0) {
-        deleteLightbulbError('Unable to Reach Server')(dispatch)
+        deleteDeviceError('Unable to Reach Server')(dispatch)
       } else {
-        deleteLightbulbError('Invalid Server Response Status: ' + this.status)(dispatch)
+        deleteDeviceError('Invalid Server Response Status: ' + this.status)(dispatch)
       }
     }
 
@@ -270,9 +270,9 @@ export function attemptAddLightbulb (serialnumber) {
 
     var oReq = new window.XMLHttpRequest()
     oReq.withCredentials = true;
-    oReq.addEventListener('load', deleteLightbulbResonseHandler)
-    oReq.addEventListener('error', deleteLightbulbResonseHandler)
-    oReq.open('POST', API_BASE_URL + '/user/' + email + '/lightbulbs')
+    oReq.addEventListener('load', deleteDeviceResonseHandler)
+    oReq.addEventListener('error', deleteDeviceResonseHandler)
+    oReq.open('POST', API_BASE_URL + '/user/' + email + '/devices')
     oReq.setRequestHeader('Content-Type', 'application/json')
     oReq.setRequestHeader('Accept', '*/*')
     oReq.setRequestHeader('Authorization', 'Token ' + token)
@@ -280,38 +280,38 @@ export function attemptAddLightbulb (serialnumber) {
   }
 }
 
-function deleteLightbulbSuccess (serialnumber) {
+function deleteDeviceSuccess (serialnumber) {
   return (dispatch) => {
     dispatch({
-      type: 'DELETE_LIGHTBULB_SUCCESS',
+      type: 'DELETE_DEVICE_SUCCESS',
       serialnumber: serialnumber,
       state: state
     })
   }
 }
 
-function deleteLightbulbError (error) {
+function deleteDeviceError (error) {
   return (dispatch, getState) => {
     dispatch({
-      type: 'DELETE_LIGHTBULB_ERROR',
+      type: 'DELETE_DEVICE_ERROR',
       error: error
     })
   }
 }
 
-function addLightbulbSuccess (status) {
+function addDeviceSuccess (status) {
   return (dispatch) => {
     dispatch({
-      type: 'ADD_LIGHTBULB_SUCCESS',
+      type: 'ADD_DEVICE_SUCCESS',
       status: status
     })
   }
 }
 
-function addLightbulbError (error) {
+function addDeviceError (error) {
   return (dispatch, getState) => {
     dispatch({
-      type: 'ADD_LIGHTBULB_ERROR',
+      type: 'ADD_DEVICE_ERROR',
       error: error
     })
   }

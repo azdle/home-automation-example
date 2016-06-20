@@ -7,8 +7,8 @@ import Login from './views/Login'
 import Logout from './views/Logout'
 import Signup from './views/Signup'
 import Account from './views/Account'
-import Lightbulbs from './views/Lightbulbs'
-import Lightbulb from './views/Lightbulb'
+import Devices from './views/Devices'
+import Device from './views/Device'
 
 require('./sass/styles.scss');
 
@@ -20,8 +20,8 @@ render((
       <Route path='/logout' component={Logout} />
       <Route path='/signup' component={Signup} />
       <Route path='/account' component={Account} />
-      <Route path='/lightbulbs' component={Lightbulbs} />
-      <Route path='/lightbulbs/:sn' component={Lightbulb} />
+      <Route path='/devices' component={Devices} />
+      <Route path='/devices/:sn' component={Device} />
     </Route>
   </Router>
 ), document.getElementById('app'))

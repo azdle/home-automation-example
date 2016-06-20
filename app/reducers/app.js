@@ -1,10 +1,10 @@
 import { combineReducers } from 'redux'
 import auth from './auth'
-import lightbulbs from './lightbulbs'
+import devices from './devices'
 
 const app = combineReducers({
   auth,
-  lightbulbs
+  devices
 })
 
 export default app

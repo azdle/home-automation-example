@@ -36,7 +36,7 @@ export default React.createClass({
 
       // FIXME: This is probably the wrong way to do this.
       if (state.auth.session !== undefined) {
-        browserHistory.push('/lightbulbs')
+        browserHistory.push('/devices')
         return
       }
 

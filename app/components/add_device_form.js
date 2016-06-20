@@ -4,14 +4,17 @@ import Button from 'muicss/lib/react/button'
 import Input from 'muicss/lib/react/input'
 
 import Spinner from '../components/spinner'
+let cancelId = "add-device-cancel";
+let submitId = "add-device-submit";
+
 
 export default React.createClass({
   handleForm (event) {
       event.preventDefault()
-      const email = event.target.elements[0].value
 
+      const sn = event.target.elements[0].value
       let request = {
-        email: email
+        sn: sn
       }
 
       this.props.onSubmit(request)
@@ -26,10 +29,11 @@ export default React.createClass({
 
     return (
       <div>
-        <h3>Share Lightbulb</h3>
+        <h3>Add Device</h3>
         <Form onSubmit={this.handleForm}>
-          <Input label='Email' floatingLabel/>
-          <Button color='primary'>Share</Button>
+          <Input label='Serial Number' floatingLabel/>
+          <Button id={cancelId}>Cancel</Button>
+          <Button id={submitId} color='primary'>Add</Button>
           {spinner_when_waiting}
         </Form>
       </div>

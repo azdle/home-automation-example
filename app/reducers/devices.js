@@ -17,31 +17,31 @@ function getTestingState () {
     statuses: [{
       id: "01:23:45:67:89:00",
       serialnumber: '1-BA30-9ANALK',
-      name: "Lightbulb 1",
+      name: "Device 1",
       state: "on",
       isUpdating: false
     },{
       id: "01:23:45:67:89:01",
       serialnumber: '2-NKA-98Y07AH',
-      name: "Lightbulb 2",
+      name: "Device 2",
       state: "on",
       isUpdating: false
     },{
       id: "01:23:45:67:89:02",
       serialnumber: '3-897-HJA8O-7YSE',
-      name: "Lightbulb 3",
+      name: "Device 3",
       state: "on",
       isUpdating: false
     },{
       id: "01:23:45:67:89:03",
       serialnumber: '4-AI0-8YWGE-HSD',
-      name: "Lightbulb 4",
+      name: "Device 4",
       state: "off",
       isUpdating: false
     },{
       id: "01:23:45:67:89:04",
       serialnumber: '5-23GA-0876WEGA',
-      name: "Lightbulb 5",
+      name: "Device 5",
       state: "off",
       isUpdating: false
     }],
@@ -87,7 +87,7 @@ function reducer (state, action) {
         status: 'error',
         error: action.error
       }
-    case 'ATTEMPT_TOGGLE_LIGHTBULB_STATE':
+    case 'ATTEMPT_TOGGLE_DEVICE_STATE':
       return {
         ...state,
         statuses: state.statuses.map((status) => {
@@ -101,7 +101,7 @@ function reducer (state, action) {
           }
         })
       }
-    case 'TOGGLE_LIGHTBULB_STATE_SUCCESS':
+    case 'TOGGLE_DEVICE_STATE_SUCCESS':
       return {
         ...state,
         statuses: state.statuses.map((status) => {
@@ -116,7 +116,7 @@ function reducer (state, action) {
           }
         })
       }
-    case 'TOGGLE_LIGHTBULB_STATE_ERROR':
+    case 'TOGGLE_DEVICE_STATE_ERROR':
       console.log(JSON.stringify(state))
       return {
         ...state,
@@ -132,45 +132,45 @@ function reducer (state, action) {
           }
         })
       }
-    case 'REQUEST_LIGHTBULBS':
+    case 'REQUEST_DEVICES':
       return {
         ...state,
         isFetching: true
       }
-    case 'REQUEST_LIGHTBULBS_SUCCESS':
+    case 'REQUEST_DEVICES_SUCCESS':
       return {
         ...state,
         isFetching: false,
         statuses: action.statuses
       }
-    case 'REQUEST_LIGHTBULBS_ERROR':
+    case 'REQUEST_DEVICES_ERROR':
       return {
         ...state,
         isFetching: false,
         error: action.error
       }
-    case 'ATTEMPT_ADD_LIGHTBULB':
+    case 'ATTEMPT_ADD_DEVICE':
       return {
         ...state,
         isAdding: true
       }
-    case 'ADD_LIGHTBULB_SUCCESS':
+    case 'ADD_DEVICE_SUCCESS':
       return {
         ...state,
         isAdding: false
       }
-    case 'ADD_LIGHTBULB_ERROR':
+    case 'ADD_DEVICE_ERROR':
       return {
         ...state,
         isAdding: false, 
         error: action.error
       }
-    case 'ATTEMPT_DELETE_LIGHTBULB':
+    case 'ATTEMPT_DELETE_DEVICE':
       return {
         ...state,
         isDeleting: true
       }
-    case 'DELETE_LIGHTBULB_SUCCESS':
+    case 'DELETE_DEVICE_SUCCESS':
       return {
         ...state,
         isDeleting: false,
@@ -178,7 +178,7 @@ function reducer (state, action) {
           (x) => x.serialnumber !== action.serialnumber
         )]
       }
-    case 'DELETE_LIGHTBULB_ERROR':
+    case 'DELETE_DEVICE_ERROR':
       return {
         ...state,
         isDeleting: false,
@@ -206,7 +206,7 @@ function reducer (state, action) {
         error: action.error
       }
     default:
-      //console.log('DEBUG: not a lightbulb action type ' + action.type);
+      //console.log('DEBUG: not a device action type ' + action.type);
       return state
   }
 }

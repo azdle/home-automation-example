@@ -3,7 +3,7 @@ var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var CleanWebpackPlugin = require('clean-webpack-plugin');
 
 // puts .env into actual env
-require('dotenv').config({silent: true});
+require('dotenv').config({silent: false});
 
 var outputPath = 'public/builds';
 

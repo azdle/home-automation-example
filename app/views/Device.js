@@ -5,8 +5,8 @@ import Form from 'muicss/lib/react/form'
 import Button from 'muicss/lib/react/button'
 import Input from 'muicss/lib/react/input'
 import Spinner from '../components/spinner'
-import ShareLightbulbForm from '../components/share_lightbulb_form'
-import { toggleLightbulbState, attemptShare, attemptDeleteLightbulb } from '../actions/lightbulbs'
+import ShareLightbulbForm from '../components/share_device_form'
+import { toggleLightbulbState, attemptShare, attemptDeleteLightbulb } from '../actions/devices'
 import { logout } from '../actions/auth'
 
 import FlatButton from 'material-ui/lib/flat-button';
@@ -39,8 +39,8 @@ export default React.createClass({
     let state = this.context.store.getState();
 
     this.unsubscribe = this.context.store.subscribe(() => {
-      if (state.lightbulbs.statuses.filter(v => v.serialnumber == this.props.params.sn).length == 0) {
-        browserHistory.push('/lightbulbs')
+      if (state.devices.statuses.filter(v => v.serialnumber == this.props.params.sn).length == 0) {
+        browserHistory.push('/devices')
       }
 
       // FIXME: This is probably the wrong way to do this.
@@ -80,7 +80,7 @@ export default React.createClass({
 
   render() {
     let spinner_when_waiting = (
-      this.context.store.getState().lightbulbs.isFetching
+      this.context.store.getState().devices.isFetching
       ? <Spinner />
       : <Spinner style={{visibility: "hidden"}} />
     );
@@ -105,7 +105,7 @@ export default React.createClass({
 
     let state = this.context.store.getState();
 
-    let lightbulb = state.lightbulbs.statuses.find(lb => lb.serialnumber === this.props.params.sn);
+    let device = state.devices.statuses.find(lb => lb.serialnumber === this.props.params.sn);
 
     let iconStyle = {
       top: 16
@@ -115,7 +115,7 @@ export default React.createClass({
     let alerts = [];
     let sharesList = [];
     let alertsList = [];
-    /* let shares = state.lightbulbs.shares.filter(v => v.serialnumber == this.props.params.sn);
+    /* let shares = state.devices.shares.filter(v => v.serialnumber == this.props.params.sn);
     let sharesList = (
       (shares.length > 0) ?
         shares.map((v) => {
@@ -127,7 +127,7 @@ export default React.createClass({
         ( <ListItem primaryText="Not yet shared." /> )
     );
 
-    let alerts = state.lightbulbs.alerts.filter(v => v.serialnumber == this.props.params.sn);
+    let alerts = state.devices.alerts.filter(v => v.serialnumber == this.props.params.sn);
     console.log("alerts: ", alerts[0]);
     let alertsList = (
       (alerts.length > 0) ?
@@ -162,16 +162,16 @@ export default React.createClass({
 
         <div className="nav-bar">
           <RaisedButton linkButton={true}
-                        onClick={() => { browserHistory.push('/lightbulbs') }}
+                        onClick={() => { browserHistory.push('/devices') }}
                         style={{ maxWidth: 45 }}
                         primary={true}
                         icon={ (<span className="home-icon"><ChevronLeft color={ '#ffffff' } /><ActionHome color={ '#ffffff' } /></span>)}/>
         </div>
 
         <List>
-          <ListItem leftAvatar={<Avatar icon={<LightbulbIcon />} backgroundColor={ lightbulb.state === 'on' ? Colors.yellow600 : Colors.grey300} />}
-                    primaryText={lightbulb.name}
-                    secondaryText={lightbulb.serialnumber}
+          <ListItem leftAvatar={<Avatar icon={<LightbulbIcon />} backgroundColor={ device.state === 'on' ? Colors.yellow600 : Colors.grey300} />}
+                    primaryText={device.name}
+                    secondaryText={device.serialnumber}
                     rightIconButton={rightIconMenu} />
         </List>
 

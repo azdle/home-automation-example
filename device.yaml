@@ -1,0 +1,13 @@
+dataports:
+-   alias: uptime
+    format: integer
+    name: uptime
+-   alias: temperature
+    format: float
+    name: temperature
+-   alias: humidity
+    format: float
+    name: humidity
+-   alias: message
+    format: string
+    name: message
