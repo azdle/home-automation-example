@@ -209,14 +209,24 @@ let DevicesView = React.createClass({
           {info_message_when_none}
           <List>
           {state.devices.statuses.sort((a,b) => a.serialnumber > b.serialnumber).map( (m,i) => {
+            const DeviceMoreMenu = (
+              <IconMenu
+                iconButtonElement={<IconButton><MoreVertIcon/></IconButton>}
+                anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+                targetOrigin={{horizontal: 'right', vertical: 'top'}} >
+                <MenuItem onTouchStart={this.handleDelete}
+                          onMouseUp={this.handleDelete}
+                          primaryText="Delete" />
+              </IconMenu>
+            )
             const link = '/devices/' + m.serialnumber
             return (
-              <Link to={link}>
-                <ListItem leftAvatar={<DeviceIcon />}
-                          primaryText={m.name}
-                          secondaryText={m.serialnumber}
-                          className="bulb-list-item" />
-              </Link>
+              <ListItem leftIcon={<DeviceIcon />}
+                        rightIconButton={DeviceMoreMenu}
+                        primaryText={m.name || "Weather Sensor"}
+                        secondaryText={m.serialnumber}
+                        onClick={() => hashHistory.push(link)}
+                        className="bulb-list-item" />
             )
             })}
           </List>

@@ -5,8 +5,8 @@ import Form from 'muicss/lib/react/form'
 import Button from 'muicss/lib/react/button'
 import Input from 'muicss/lib/react/input'
 import Spinner from '../components/spinner'
-import ShareLightbulbForm from '../components/share_device_form'
-import { toggleLightbulbState, attemptShare, attemptDeleteLightbulb } from '../actions/devices'
+import ShareDevicebulbForm from '../components/share_device_form'
+import { toggleDeviceState, attemptShare, attemptDeleteDevice } from '../actions/devices'
 import { logout } from '../actions/auth'
 
 import FlatButton from 'material-ui/lib/flat-button';
@@ -63,7 +63,7 @@ export default React.createClass({
   },
 
   handleDelete (r) {
-    attemptDeleteLightbulb(this.props.params.sn)(this.context.store.dispatch,this.context.store.getState)
+    attemptDeleteDevice(this.props.params.sn)(this.context.store.dispatch,this.context.store.getState)
   },
 
   /**
@@ -175,18 +175,24 @@ export default React.createClass({
                     disabled={true} />
         </List>
 
-        <List subheader="Shared with" insetSubheader={false}>
+        <List subheader="Shared with">
           { sharesList }
           <ListItem leftIcon={<AddIcon />}
                     primaryText="Share"
                     onClick={() => alert("Not Yet Implemented")} />
         </List>
 
-        <List subheader="Alerts" insetSubheader={false}>
+        <List subheader="Alerts">
           { alertsList }
           <ListItem leftIcon={<AddIcon />}
                     primaryText="Create Alert"
                     onClick={() => alert("Not Yet Implemented")} />
+        </List>
+
+        <List subheader="Settings">
+          <ListItem leftIcon={<AddIcon />}
+                    primaryText="Delete"
+                    onClick={() => alert("Not Yet Implemented")/*this.handleDelete*/} />
         </List>
       </div>
     )
@@ -195,7 +201,7 @@ export default React.createClass({
       <div>
         <AppBar title={deviceName}
                 iconElementRight={ mainAppMoreMenu }
-                iconElementLeft={ <Link  to='/devices'><IconButton><ChevronLeft /></IconButton></Link> } />
+                iconElementLeft={ <IconButton onClick={()=> hashHistory.push("/devices")}><ChevronLeft /></IconButton> } />
 
         {main_content}
 
